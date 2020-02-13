@@ -1,0 +1,181 @@
+{
+    "defaultSeverity": "error",
+    "extends": [
+        "tslint:all"
+    ],
+    "jsRules": {},
+    "rules": {
+        "no-submodule-imports": false,
+        "no-require-imports": false,
+        "no-console": false,
+        "align": false,
+        "no-string-literal": false,
+        "no-for-in-array": true,
+        "forin": false,
+        "prefer-switch": false,
+        "switch-final-break": false,
+        "cyclomatic-complexity": false,
+        "only-arrow-functions": [
+            true,
+            "allow-declarations"
+        ],
+        "curly": [
+            false,
+            "ignore-same-line"
+        ],
+        "no-unused-expression": false,
+        "no-magic-numbers": false,
+        "no-empty": [
+            false
+        ],
+        "member-ordering": [
+            false
+        ],
+        "prefer-conditional-expression": false,
+        "object-literal-sort-keys": false,
+        "no-null-keyword": false,
+        "no-any": false,
+        "no-reference": false,
+        "no-namespace": false,
+        "await-promise": false,
+        "no-bitwise": false,
+        "radix": false,
+        "max-classes-per-file": false,
+        "max-file-line-count": false,
+        "max-line-length": false,
+        "no-mergeable-namespace": false,
+        "linebreak-style": [
+            true,
+            "CRLF"
+        ],
+        "no-unnecessary-callback-wrapper": false,
+        "typedef": [
+            true,
+            "call-signature",
+            "parameter",
+            "member-variable-declaration"
+        ],
+        "no-unnecessary-qualifier": false,
+        "object-literal-key-quotes": [
+            true,
+            "consistent"
+        ],
+        "one-line": [
+            true,
+            "check-open-brace"
+        ],
+        "prefer-function-over-method": false,
+        "array-type": [
+            true,
+            "array"
+        ],
+        "comment-format": [
+            false
+        ],
+        "trailing-comma": false,
+        "typedef-whitespace": false,
+        "triple-equals": false,
+        "type-literal-delimiter": false,
+        "prefer-template": false,
+        "no-inferrable-types": false,
+        "newline-before-return": false,
+        "prefer-method-signature": false,
+        "completed-docs": false,
+        "jsdoc-format": false,
+        "interface-name": [
+            true,
+            "always-prefix"
+        ],
+        "interface-over-type-literal": false,
+        "no-parameter-properties": false,
+        "quotemark": [
+            true,
+            "double",
+            "avoid-escape"
+        ],
+        "return-undefined": false,
+        "no-dynamic-delete": false,
+        "object-literal-shorthand": false,
+        "variable-name": [
+            true,
+            "ban-keywords",
+            "check-format",
+            "allow-leading-underscore",
+            "allow-snake-case",
+            "allow-pascal-case"
+        ],
+        "number-literal-format": false,
+        "no-trailing-whitespace": false,
+        "newline-per-chained-call": false,
+        "ban": [
+            true,
+            {
+                "name": [
+                    "*",
+                    "setTimeScale"
+                ],
+                "message": "Do not use directly cc.director.getScheduler().setTimeScale(..) it can conflict with ca.applicationLocker operations"
+            },
+            {
+                "name": [
+                    "*",
+                    "apply"
+                ],
+                "message": "Not good design, use regular call instead"
+            },
+            {
+                "name": [
+                    "*",
+                    "call"
+                ],
+                "message": "Not good design, use regular call instead"
+            },
+            {
+                "name": [
+                    "*",
+                    "caller"
+                ],
+                "message": "Not good design, use regular call instead"
+            },
+            {
+                "name": [
+                    "*",
+                    "bind"
+                ],
+                "message": "Use lambda expression instead. read more: https://basarat.gitbooks.io/typescript/docs/tips/bind.html"
+            },
+            /*{
+                "name": [
+                    "*",
+                    "forEach"
+                ],
+                "message": "Use a regular for loop instead."
+            }*/
+        ],
+        "ban-types": {
+            "options": [
+                [
+                    "Object",
+                    "Avoid using the `Object` type. Did you mean `object`?"
+                ],
+                [
+                    "Function",
+                    "Avoid using the `Function` type. Prefer a specific function type, like `() => void`."
+                ],
+                [
+                    "Boolean",
+                    "Avoid using the `Boolean` type. Did you mean `boolean`?"
+                ],
+                [
+                    "Number",
+                    "Avoid using the `Number` type. Did you mean `number`?"
+                ],
+                [
+                    "String",
+                    "Avoid using the `String` type. Did you mean `string`?"
+                ]
+            ]
+        }
+    },
+    "rulesDirectory": []
+}

@@ -1,10 +1,11 @@
-import { AmbientLight, AnimationMixer, Audio, AudioListener, AudioLoader, Clock, Color, DirectionalLight, PerspectiveCamera, Scene, Vector3, WebGLRenderer, Object3D } from "three";
+import { AmbientLight, AnimationMixer, Audio, AudioListener, AudioLoader, Clock, Color, DirectionalLight, Mesh, MeshBasicMaterial, Object3D, PerspectiveCamera, Scene, Texture, TextureLoader, Vector3, WebGLRenderer } from "three";
 import { GLTF, GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 export interface ISceneParams {
     cameraParams: ICameraParams;
     ambLightParams: ILightParams;
     dirLightParams: ILightParams;
+    backgroundMusicParams: IBackgroundMusicParams;
 }
 
 export interface ICameraParams {
@@ -19,28 +20,69 @@ export interface ILightParams {
     intensity: number;
 }
 
+export interface IBackgroundMusicParams {
+    volume: number;
+    lopped: boolean;
+}
+
 export class ExtendedScene extends Scene {
-    private static runningScene: ExtendedScene = null;
-
-    private _clock: Clock = new Clock();
-    private _camera: PerspectiveCamera = null;
-    private _renderer: WebGLRenderer = null;
-    private _animationMixers: AnimationMixer[] = [];
-    private _gltfLoader: GLTFLoader = null;
-
-    private _ambientLight: AmbientLight = null;
-    private _directionalLight: DirectionalLight = null;
-
     public static getRunningScene(): ExtendedScene {
         return this ? ExtendedScene.runningScene : null;
     }
 
+    private static runningScene: ExtendedScene = null;
+
+    private _clock: Clock = new Clock();
+    private _audioListener: AudioListener = new AudioListener();
+    private _gltfLoader: GLTFLoader = new GLTFLoader();
+    private _textureLoader: TextureLoader = new TextureLoader();
+
+    private _renderer: WebGLRenderer = null;
+    private _camera: PerspectiveCamera = null;
+    private _ambientLight: AmbientLight = null;
+    private _directionalLight: DirectionalLight = null;
+
+    private _animationMixers: AnimationMixer[] = [];
+
     public constructor(sceneParams: ISceneParams) {
         super();
 
-        this._camera = new PerspectiveCamera(sceneParams.cameraParams.fov, window.innerWidth / window.innerHeight, sceneParams.cameraParams.near, sceneParams.cameraParams.far);
-        this._camera.position.set(sceneParams.cameraParams.position.x, sceneParams.cameraParams.position.y, sceneParams.cameraParams.position.z);
+        this.initRenderer();
+        this.initCamera(sceneParams.cameraParams);
+        this.initLight(sceneParams.ambLightParams, sceneParams.dirLightParams);
+        this.initBackgroundMusic(sceneParams.backgroundMusicParams);
 
+        ExtendedScene.runningScene = this;
+    }
+
+    public dispose(): void {
+        this._clock = null;
+        this._audioListener = null;
+        this._gltfLoader = null;
+
+        this._renderer = null;
+        this._camera = null;
+        this._ambientLight = null;
+        this._directionalLight = null;
+
+        this._animationMixers = [];
+
+        super.dispose();
+    }
+
+    public getTextureLoader(): TextureLoader {
+        return this._textureLoader;
+    }
+
+    public getRenderer(): WebGLRenderer {
+        return this._renderer;
+    }
+
+    public getCamera(): PerspectiveCamera {
+        return this._camera;
+    }
+
+    public initRenderer(): void {
         this._renderer = new WebGLRenderer({
             antialias: true,
             alpha: true
@@ -48,46 +90,32 @@ export class ExtendedScene extends Scene {
 
         this._renderer.setSize(window.innerWidth, window.innerHeight);
         document.body.appendChild(this._renderer.domElement);
-
-        this._gltfLoader = new GLTFLoader();
-
-        window.onresize = () => {
-            this._renderer.setSize(window.innerWidth, window.innerHeight);
-            this._camera.aspect = window.innerWidth / window.innerHeight;
-            this._camera.updateProjectionMatrix();
-        };
-
-        const ambientLight = new AmbientLight(sceneParams.ambLightParams.color, sceneParams.ambLightParams.intensity);
-        const directionalLight = new DirectionalLight(sceneParams.dirLightParams.color, sceneParams.dirLightParams.intensity);
-        this._directionalLight = directionalLight;
-        ambientLight.name = "AmbientLight";
-        directionalLight.name = "DirectionalLight";
-        this.add(ambientLight);
-        this.add(directionalLight);
-
-        const listener = new AudioListener();
-        this._camera.add(listener);
-
-        const sound = new Audio(listener);
-        const audioLoader = new AudioLoader();
-        audioLoader.load(require("../assets/sounds/Main_menu_musics_1.ogg"), (buffer) => {
-            sound.setBuffer(buffer);
-            sound.setLoop(true);
-            sound.setVolume(0.5);
-            //sound.play();
-        });
-
-        ExtendedScene.runningScene = this;
     }
 
-    public dispose(): void {
-        this._clock = null;
-        this._camera = null;
-        this._renderer = null;
-        this._animationMixers = [];
-        this._gltfLoader = null;
+    public initCamera(cameraParams: ICameraParams): void {
+        this._camera = new PerspectiveCamera(cameraParams.fov, window.innerWidth / window.innerHeight, cameraParams.near, cameraParams.far);
+        this._camera.position.set(cameraParams.position.x, cameraParams.position.y, cameraParams.position.z);
+        this._camera.add(this._audioListener);
+    }
 
-        super.dispose();
+    public initLight(ambLightParams: ILightParams, dirLightParams: ILightParams): void {
+        this._ambientLight = new AmbientLight(ambLightParams.color, ambLightParams.intensity);
+        this._directionalLight = new DirectionalLight(dirLightParams.color, dirLightParams.intensity);
+        this._ambientLight.name = "AmbientLight";
+        this._directionalLight.name = "DirectionalLight";
+        this.add(this._ambientLight);
+        this.add(this._directionalLight);
+    }
+
+    public initBackgroundMusic(backgroundMusicParams: IBackgroundMusicParams): void {
+        const sound = new Audio(this._audioListener);
+        const audioLoader = new AudioLoader();
+
+        audioLoader.load(require("../assets/sounds/Main_menu_musics_1.ogg"), (buffer) => {
+            sound.setBuffer(buffer);
+            sound.setVolume(backgroundMusicParams.volume);
+            sound.setLoop(backgroundMusicParams.lopped);
+        });
     }
 
     public getMixerByRootOrCreate(root: Object3D): AnimationMixer {
@@ -114,22 +142,34 @@ export class ExtendedScene extends Scene {
         this._animationMixers = [];
     }
 
+    public retargetLight(target: Object3D, position: Vector3): void {
+        this._directionalLight.target = target;
+        this._directionalLight.position.set(position.x, position.y, position.z);
+    }
+
     public addGltfObject(path: string, callback: (gltf: GLTF) => void): void {
-        this._gltfLoader.load(path,
-            (gltf) => {
-                gltf.userData = this;
-                this.add(gltf.scene);
-                this._directionalLight.position.set(gltf.scene.position.x, gltf.scene.position.y + 100, gltf.scene.position.z + 200);
-                this._directionalLight.target = gltf.scene;
+        this._gltfLoader.load(path, (gltf) => {
+            this.add(gltf.scene);
 
-                requestAnimationFrame(() => this.animate());
-                console.log("Loaded model");
+            requestAnimationFrame(() => this.animate());
+            callback(gltf);
 
-                callback(gltf);
-            },
+            console.log("Loaded model");
+        },
             undefined,
             (error) => console.error("Failed to load model", error)
         );
+    }
+
+    public addTexture(path: string, callback: (texture: MeshBasicMaterial) => Mesh): Texture {
+        return this._textureLoader.load(path, (texture) => {
+            const material = new MeshBasicMaterial({
+                map: texture,
+                transparent: true
+            });
+
+            this.add(callback(material));
+        });
     }
 
     private animate(): void {

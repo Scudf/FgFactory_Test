@@ -1,9 +1,35 @@
+import { Vector3 } from "three";
+import { ISceneParams } from "./extendedScene";
 import { PlayerBodyPartsNames, PlayerGender, PlayerClothesNames, GirldBodyPartsNames, GirlClothesNames, BoyBodyPartsNames, BoyClothesNames } from "./playerBody";
+import { TennisPlayerAnimationsNames } from "./tennisPlayer";
 
 export namespace GlobalConfig {
-    export const g_cameraFov: number = 45;
-    export const g_cameraNear: number = 0.1;
-    export const g_cameraFar: number = 1000;
+    export const initialPlayerPosition = new Vector3(0, -100, 0);
+    export const initialArrowsPos = new Vector3(28, -87, 50);
+    export const initialPlatformAngle = -95;
+    export const elementsSize = 50;
+    export const rotationAcceleration = 10;
+
+    export const sceneParams: ISceneParams = {
+        cameraParams: {
+            fov: 45,
+            near: 0.1,
+            far: 1000,
+            position: new Vector3(0, 0, 300)
+        },
+        ambLightParams: {
+            color: 0xffffff,
+            intensity: 0.4
+        },
+        dirLightParams: {
+            color: 0xffffff,
+            intensity: 1
+        },
+        backgroundMusicParams: {
+            volume: 0.5,
+            lopped: true
+        }
+    };
 
     export const g_girlConfig = [
         `${PlayerGender.n_girl}_${PlayerBodyPartsNames.n_body}`,
@@ -38,5 +64,12 @@ export namespace GlobalConfig {
         `${PlayerGender.n_boy}_${PlayerClothesNames.n_shirt}_01`,
         `${PlayerGender.n_boy}_${PlayerClothesNames.n_socks}_01`,
         `${PlayerGender.n_boy}_${PlayerClothesNames.n_shoes}_01`,
+    ];
+
+    export const animationsPool = [
+        TennisPlayerAnimationsNames.n_main_menu_idle_type_2,
+        TennisPlayerAnimationsNames.n_main_menu_idle_type_3,
+        TennisPlayerAnimationsNames.n_gameplay_idle,
+        TennisPlayerAnimationsNames.n_steps_side_to_side
     ];
 }

@@ -11,7 +11,7 @@ export namespace PlayerBodyPartsNames {
     export const n_eyebrow = "Eyebrow";
     export const n_eyeballs = "Eyes";
     export const n_mole = "Mole";
-    export const n_teeth = "Teeth"; 
+    export const n_teeth = "Teeth";
 }
 
 export namespace GirldBodyPartsNames {
@@ -74,7 +74,7 @@ export class PlayerBody implements IPartsManager<SkinnedMesh> {
     }
 
     public setLoader(textureLoader: TextureLoader): void {
-		this._textureLoader = textureLoader;
+        this._textureLoader = textureLoader;
     }
 
     public getPartByName(name: string): SkinnedMesh {
@@ -94,21 +94,21 @@ export class PlayerBody implements IPartsManager<SkinnedMesh> {
         }
     }
 
-	public changeTexture(elementName:string, fullpath: string): void {
+    public changeTexture(elementName: string, fullpath: string): void {
         const element = this.getPartByName(`${elementName}`);
         let material: MeshStandardMaterial = null;
 
-        if (element.material as MeshStandardMaterial ) {
-			material = element.material as MeshStandardMaterial;
+        if (element.material as MeshStandardMaterial) {
+            material = element.material as MeshStandardMaterial;
         }
-        
-		if (!material || !this._textureLoader) {
-			return;
-		}
 
-		this._textureLoader.load(fullpath, (texture) => {
-			material.map = texture;
-			material.needsUpdate = true;
-		});
+        if (!material || !this._textureLoader) {
+            return;
+        }
+
+        this._textureLoader.load(fullpath, (texture) => {
+            material.map = texture;
+            material.needsUpdate = true;
+        });
     }
 }

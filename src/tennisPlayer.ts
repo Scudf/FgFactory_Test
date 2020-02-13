@@ -10,6 +10,41 @@ export namespace TennisPlayerGender {
     export const n_boy = "by";
 }
 
+export namespace TennisPlayerAnimationsNames {
+    export const n_gameplay_idle = "gameplay_idle";
+    export const n_gameplay_tired_idle = "gameplay_tired_idle";
+    export const n_hit_backhand_double = "hit_backhand_double";
+    export const n_hit_backhand_single = "hit_backhand_single";
+    export const n_hit_dropshot_backhand = "hit_dropshot_backhand";
+    export const n_hit_dropshot_forehand = "hit_dropshot_forehand";
+    export const n_hit_forehand = "hit_forehand";
+    export const n_hit_lob_backhand_double_hands = "hit_lob_backhand_double_hands";
+    export const n_hit_lob_backhand_single_hands = "hit_lob_backhand_single_hands";
+    export const n_hit_lob_forehand = "hit_lob_forehand";
+    export const n_lose_type_1 = "lose_type_1";
+    export const n_lose_type_2 = "lose_type_2";
+    export const n_lose_type_3 = "lose_type_3";
+    export const n_main_menu_idle_type_1 = "main_menu_idle_type_1";
+    export const n_main_menu_idle_type_2 = "main_menu_idle_type_2";
+    export const n_main_menu_idle_type_3 = "main_menu_idle_type_3";
+    export const n_run_backward = "run_backward";
+    export const n_run_forward = "run_forward";
+    export const n_run_left = "run_left";
+    export const n_run_right = "run_right";
+    export const n_serve = "serve";
+    export const n_sit_down = "sit_down";
+    export const n_sitting_idle_break = "sitting_idle_break";
+    export const n_smash = "smash";
+    export const n_stand_up = "stand_up";
+    export const n_steps_side_to_side = "steps_side_to_side";
+    export const n_volley_backhand = "volley_backhand";
+    export const n_volley_forehand = "volley_forehand";
+    export const n_walk_to_rest = "walk_to_rest";
+    export const n_win_type_1 = "win_type_1";
+    export const n_win_type_2 = "win_type_2";
+    export const n_win_type_3 = "win_type_3";
+}
+
 export class TennisPlayer implements IPartsManager<Object3D> {
     public static getTennisPlayerGenderByPlayer(value: string): string {
         switch (value) {
@@ -29,9 +64,9 @@ export class TennisPlayer implements IPartsManager<Object3D> {
 
     public static getConfigByGender(value: string): string[] {
         switch (value) {
-            case PlayerGender.n_boy:;
+            case PlayerGender.n_boy: ;
             case TennisPlayerGender.n_boy: return GlobalConfig.g_boyConfig;
-            case PlayerGender.n_girl:;
+            case PlayerGender.n_girl: ;
             case TennisPlayerGender.n_girl: return GlobalConfig.g_girlConfig;
             default: return null;
         }
@@ -44,10 +79,6 @@ export class TennisPlayer implements IPartsManager<Object3D> {
 
     private _mixer: AnimationMixer = null;
 
-    private mouseX: number = 0;
-    private mouseDelta: number = 0;
-    private allowMove: boolean = false;
-
     public constructor(gltf: GLTF, gender: string, loader: TextureLoader) {
         this._core = gltf;
 
@@ -56,6 +87,7 @@ export class TennisPlayer implements IPartsManager<Object3D> {
         this._body.getCore().visible = true;
         this._racket = this.getPartByName("Racket");
         this._tennisBall = this.getPartByName("Tennis_ball");
+        this._tennisBall.visible = true;
         this._racket.visible = true;
 
         const config = TennisPlayer.getConfigByGender(gender);
@@ -63,10 +95,6 @@ export class TennisPlayer implements IPartsManager<Object3D> {
         this._body.unhideParts(config);
 
         //playerBody.changeTexture(`${PlayerBodyPartsNames.n_shorts}01`, require("../assets/3D/textures/Tennis_Girl_Textures/Girl_premium/Premium_shorts/Girl_Short_2D_View01.png"));
-
-        document.addEventListener("mousemove", this.onDocumentMouseMove, false);
-        document.addEventListener("mousedown", this.onDocumentMouseDown, false);
-        document.addEventListener("mouseup", this.onDocumentMouseUp, false);
     }
 
     public getCore(): GLTF {
@@ -74,7 +102,7 @@ export class TennisPlayer implements IPartsManager<Object3D> {
     }
 
     public getParent(): ExtendedScene {
-        return this._core.userData as ExtendedScene;
+        return this._core.scene.parent as ExtendedScene;
     }
 
     public getBody(): PlayerBody {
@@ -117,37 +145,6 @@ export class TennisPlayer implements IPartsManager<Object3D> {
     public unhideParts(partsNames: string[]): void {
         for (const partName of partsNames) {
             this.getPartByName(partName).visible = true;
-        }
-    }
-
-    private onDocumentMouseMove(event: MouseEvent): void {
-        if (!this.allowMove) {
-            return;
-        }
-
-        event.preventDefault();
-        const newValue = (event.clientX / window.innerWidth) * 2 - 1;
-        this.mouseDelta = this.mouseX === 0 ? 0 : this.mouseX - newValue;
-        this.mouseX = newValue;
-
-        const coef = !isNaN(this.mouseDelta * 10) ? this.mouseDelta * 10 : 0;
-        const obj = ExtendedScene.getRunningScene().getObjectByName("TennisPlayer");
-
-        if (obj) {
-            obj.rotateOnAxis(new Vector3(0, 1, 0), -coef);
-        }
-    }
-
-    private onDocumentMouseDown(event: MouseEvent): void {
-        if (event.button === MOUSE.LEFT) {
-            this.allowMove = true;
-        }
-    }
-
-    private onDocumentMouseUp(event: MouseEvent): void {
-        if (event.button === MOUSE.LEFT) {
-            this.allowMove = false;
-            this.mouseX = 0;
         }
     }
 }

@@ -1,6 +1,7 @@
 import { Vector3 } from "three";
+
 import { ISceneParams } from "./extendedScene";
-import { PlayerBodyPartsNames, PlayerGender, PlayerClothesNames, GirldBodyPartsNames, GirlClothesNames, BoyBodyPartsNames, BoyClothesNames } from "./playerBody";
+import { BoyBodyPartsNames, BoyClothesNames, GirlClothesNames, GirldBodyPartsNames, PlayerBodyPartsNames, PlayerClothesNames, PlayerGender } from "./playerBody";
 import { TennisPlayerAnimationsNames } from "./tennisPlayer";
 
 export namespace GlobalConfig {

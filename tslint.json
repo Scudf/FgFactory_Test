@@ -143,14 +143,14 @@
                     "bind"
                 ],
                 "message": "Use lambda expression instead. read more: https://basarat.gitbooks.io/typescript/docs/tips/bind.html"
-            },
-            /*{
+            }
+            {
                 "name": [
                     "*",
                     "forEach"
                 ],
                 "message": "Use a regular for loop instead."
-            }*/
+            }
         ],
         "ban-types": {
             "options": [

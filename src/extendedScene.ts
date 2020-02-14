@@ -27,7 +27,7 @@ export interface IBackgroundMusicParams {
 
 export class ExtendedScene extends Scene {
     public static getRunningScene(): ExtendedScene {
-        return this ? ExtendedScene.runningScene : null;
+        return ExtendedScene ? ExtendedScene.runningScene : null;
     }
 
     private static runningScene: ExtendedScene = null;
@@ -129,8 +129,8 @@ export class ExtendedScene extends Scene {
     }
 
     public addMixer(mixer: AnimationMixer, keepUnique: boolean = true): void {
-        for (const idx in this._animationMixers) {
-            if (this._animationMixers[idx].getRoot() === mixer.getRoot() && keepUnique) {
+        for (const aMixer of this._animationMixers) {
+            if (aMixer.getRoot() === mixer.getRoot() && keepUnique) {
                 return;
             }
         }

@@ -1,9 +1,10 @@
-import { AnimationMixer, MOUSE, Object3D, TextureLoader, Vector3 } from "three";
+import { AnimationMixer, MOUSE, Object3D, TextureLoader } from "three";
 import { GLTF } from "three/examples/jsm/loaders/GLTFLoader";
+
 import { ExtendedScene } from "./extendedScene";
-import { PlayerBody, PlayerGender } from "./playerBody";
-import { IPartsManager } from "./iPartsManager";
 import { GlobalConfig } from "./globalConfig";
+import { IPartsManager } from "./iPartsManager";
+import { PlayerBody, PlayerGender } from "./playerBody";
 
 export namespace TennisPlayerGender {
     export const n_girl = "grl";
@@ -64,9 +65,9 @@ export class TennisPlayer implements IPartsManager<Object3D> {
 
     public static getConfigByGender(value: string): string[] {
         switch (value) {
-            case PlayerGender.n_boy: ;
+            case PlayerGender.n_boy:
             case TennisPlayerGender.n_boy: return GlobalConfig.g_boyConfig;
-            case PlayerGender.n_girl: ;
+            case PlayerGender.n_girl:
             case TennisPlayerGender.n_girl: return GlobalConfig.g_girlConfig;
             default: return null;
         }

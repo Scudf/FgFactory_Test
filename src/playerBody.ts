@@ -1,4 +1,5 @@
 import { MeshStandardMaterial, Object3D, SkinnedMesh, TextureLoader } from "three";
+
 import { IPartsManager } from "./iPartsManager";
 
 export namespace PlayerGender {

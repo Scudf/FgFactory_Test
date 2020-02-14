@@ -14,3 +14,21 @@ canvas {
     bottom: 0;
     left: 0;
 }
+
+/*.smooth-scroll { height: 100vh; overflow: hidden; }
+
+.smooth-scroll_container {
+  display: flex; flex-direction: column;
+  padding: 0 20px; 
+  transform: translateY(0); 
+  transition: transform 0.3s ease-out; 
+}
+
+.smooth-scroll_block {
+  width: calc(100vw - 40px); height: 70vh; 
+  margin: 15vh auto; 
+  font: 300 30vh sans-serif; 
+  line-height: 70vh; text-align: center; 
+  box-shadow: 0 5px 15px 0 #0004; 
+  background-color: #fff; 
+}*/

@@ -4,6 +4,8 @@ import { CircleGeometry, MathUtils, Mesh, MOUSE, PlaneGeometry, Vector3 } from "
 
 import { ExtendedScene } from "./extendedScene";
 import { GlobalConfig } from "./globalConfig";
+// tslint:disable-next-line:no-import-side-effect
+import "./main.css";
 import { TennisPlayer, TennisPlayerGender } from "./tennisPlayer";
 
 window.THREE = THREE;

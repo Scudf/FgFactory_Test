@@ -2,6 +2,8 @@
 ------------------------
 git clone https://github.com/Scudf/FgFactory_Test.git
 ------------------------
+cd FgFactory_Test
+------------------------
 npm install
 ------------------------
 npm run dev or F1 -> Run Task -> npm: build

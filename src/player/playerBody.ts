@@ -1,6 +1,6 @@
-import { MeshStandardMaterial, Object3D, SkinnedMesh, TextureLoader } from "three";
+import { Color, MeshStandardMaterial, Object3D, SkinnedMesh, TextureLoader } from "three";
 
-import { IPartsManager } from "./iPartsManager";
+import { IPartsManager } from "../iPartsManager";
 
 export namespace PlayerGender {
     export const n_boy = "Boy";
@@ -58,6 +58,17 @@ export namespace BoyClothesNames {
     export const n_shorts_long = "Shorts_long";
 }
 
+export enum ECategories {
+    SHIRT,
+    SHORT,
+    HAIR_COLOR
+}
+
+export enum EPartType {
+    COMMON,
+    PREMIUM
+}
+
 export class PlayerBody implements IPartsManager<SkinnedMesh> {
     private _core: Object3D = null;
     private _textureLoader: TextureLoader = null;
@@ -90,8 +101,17 @@ export class PlayerBody implements IPartsManager<SkinnedMesh> {
 
     public unhideParts(partsNames: string[]): void {
         for (const partName of partsNames) {
-            const part = this.getPartByName(partName);
             this.getPartByName(partName).visible = true;
+        }
+    }
+
+    public changeTextureColor(elementName: string, color: Color | number | string): void {
+        const element = this.getPartByName(`${elementName}`);
+        let material: MeshStandardMaterial = null;
+
+        if (element.material as MeshStandardMaterial) {
+            material = element.material as MeshStandardMaterial;
+            material.emissive.set(new Color(color));
         }
     }
 

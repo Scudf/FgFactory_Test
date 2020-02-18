@@ -1,15 +1,15 @@
 import { Vector3 } from "three";
 
 import { ISceneParams } from "./extendedScene";
-import { BoyBodyPartsNames, BoyClothesNames, GirlClothesNames, GirldBodyPartsNames, PlayerBodyPartsNames, PlayerClothesNames, PlayerGender } from "./playerBody";
-import { TennisPlayerAnimationsNames } from "./tennisPlayer";
+import { BoyBodyPartsNames, BoyClothesNames, ECategories, GirlClothesNames, GirldBodyPartsNames, PlayerBodyPartsNames, PlayerClothesNames, PlayerGender } from "./player/playerBody";
+import { TennisPlayerAnimationsNames } from "./player/tennisPlayer";
 
 export namespace GlobalConfig {
-    export const initialPlayerPosition = new Vector3(0, -100, 0);
-    export const initialArrowsPos = new Vector3(28, -87, 50);
+    export const initialPlayerPosition = new Vector3(0, -100, -50);
+    export const initialArrowsPos = new Vector3(25, -87, 10);
     export const initialPlatformAngle = -95;
     export const elementsSize = 50;
-    export const rotationAcceleration = 10;
+    export const rotationAcceleration = 5;
 
     export const sceneParams: ISceneParams = {
         cameraParams: {
@@ -73,4 +73,12 @@ export namespace GlobalConfig {
         TennisPlayerAnimationsNames.n_gameplay_idle,
         TennisPlayerAnimationsNames.n_steps_side_to_side
     ];
+
+    export const categories = [];
+    categories[ECategories.SHIRT] = "Shirts";
+    categories[ECategories.SHORT] = "Shorts";
+    categories[ECategories.HAIR_COLOR] = "Hair Color";
+    categories[3] = "Scroll Test";
+    categories[4] = "Scroll Test";
+    categories[5] = "Scroll Test";
 }

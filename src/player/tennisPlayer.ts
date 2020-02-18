@@ -1,9 +1,11 @@
-import { AnimationMixer, MOUSE, Object3D, TextureLoader } from "three";
+import { AnimationMixer, MathUtils, Object3D, Raycaster, TextureLoader, Vector2 } from "three";
 import { GLTF } from "three/examples/jsm/loaders/GLTFLoader";
 
-import { ExtendedScene } from "./extendedScene";
-import { GlobalConfig } from "./globalConfig";
-import { IPartsManager } from "./iPartsManager";
+import { ExtendedScene } from "../extendedScene";
+import { GlobalConfig } from "../globalConfig";
+import { IPartsManager } from "../iPartsManager";
+import * as utils from "../utils";
+
 import { PlayerBody, PlayerGender } from "./playerBody";
 
 export namespace TennisPlayerGender {
@@ -73,12 +75,22 @@ export class TennisPlayer implements IPartsManager<Object3D> {
         }
     }
 
+    public static readonly playerName: string = "TennisPlayer";
+
     private _core: GLTF = null;
     private _body: PlayerBody = null;
     private _racket: Object3D = null;
     private _tennisBall: Object3D = null;
 
     private _mixer: AnimationMixer = null;
+
+    private _allowMove: boolean = false;
+    private _mouseDelta: number = 0;
+    private _mouseX: number = 0;
+    private _mouse: Vector2 = new Vector2(0, 0);
+    private _raycaster: Raycaster = new Raycaster();
+
+    private _tempValue: number = 0;
 
     public constructor(gltf: GLTF, gender: string, loader: TextureLoader) {
         this._core = gltf;
@@ -95,7 +107,14 @@ export class TennisPlayer implements IPartsManager<Object3D> {
         this._body.setLoader(loader);
         this._body.unhideParts(config);
 
-        //playerBody.changeTexture(`${PlayerBodyPartsNames.n_shorts}01`, require("../assets/3D/textures/Tennis_Girl_Textures/Girl_premium/Premium_shorts/Girl_Short_2D_View01.png"));
+        const touchZone = document.getElementById("touch-zone");
+        touchZone.addEventListener("mousedown", this._onDown.bind(this), false);
+        touchZone.addEventListener("touchstart", this._onDown.bind(this), false);
+        touchZone.addEventListener("mousemove", this._onMove.bind(this), false);
+        touchZone.addEventListener("touchmove", this._onMove.bind(this), false);
+        touchZone.addEventListener("mouseup", this._onUp.bind(this), false);
+        touchZone.addEventListener("touchend", this._onUp.bind(this), false);
+        touchZone.addEventListener("dblclick", this._onDoubleClick.bind(this), false);
     }
 
     public getCore(): GLTF {
@@ -147,5 +166,67 @@ export class TennisPlayer implements IPartsManager<Object3D> {
         for (const partName of partsNames) {
             this.getPartByName(partName).visible = true;
         }
+    }
+
+    private _getMousePos(event: MouseEvent): Vector2 {
+        return new Vector2(this._mouse.x = (event.clientX / window.innerWidth) * 2 - 1, this._mouse.y = (event.clientY / window.innerHeight) * 2 - 1);
+    }
+
+    private _isIntersected(mousePos: Vector2): boolean {
+        this._raycaster.setFromCamera(mousePos, this.getParent().getCamera());
+        const intersects = this._raycaster.intersectObjects(this.getBody().getCore().children);
+
+        if (intersects.length) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private _onDown(event: MouseEvent | TouchEvent): void {
+        const vec = utils._handleClient(event);
+        this._mouse.x = (vec.x / window.innerWidth) * 2 - 1;
+        this._mouse.y = (vec.y / window.innerHeight) * 2 - 1;
+        this._raycaster.setFromCamera(this._mouse, this.getParent().getCamera());
+        const intersects = this._raycaster.intersectObjects(this.getBody().getCore().children);
+
+        if (intersects.length) {
+            this._allowMove = true;
+        }
+    }
+
+    private _onMove(event: MouseEvent | TouchEvent): void {
+        if (!this._allowMove) {
+            return;
+        }
+
+        event.preventDefault();
+        const newValue = (utils._handleClient(event).x / window.innerWidth) * 2 - 1;
+        this._mouseDelta = this._mouseX === 0 ? 0 : this._mouseX - newValue;
+        this._mouseX = newValue;
+
+        const acceleration = GlobalConfig.rotationAcceleration;
+        const coef = !isNaN(this._mouseDelta * acceleration) ? this._mouseDelta * acceleration : 0;
+        this._core.scene.rotateY(-coef);
+    }
+
+    private _onUp(): void {
+        this._allowMove = false;
+        this._mouseX = 0;
+        this._core.scene.rotation.set(0, 0, 0);
+    }
+
+    private _onDoubleClick(event: MouseEvent): void {
+        if (!this._isIntersected(this._getMousePos(event))) {
+            return;
+        }
+
+        const value = this._tempValue;
+
+        while (value === this._tempValue) {
+            this._tempValue = MathUtils.randInt(0, GlobalConfig.animationsPool.length - 1);
+        }
+
+        this.playAnimation(GlobalConfig.animationsPool[this._tempValue]);
     }
 }

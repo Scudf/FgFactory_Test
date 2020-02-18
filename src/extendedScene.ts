@@ -115,6 +115,7 @@ export class ExtendedScene extends Scene {
             sound.setBuffer(buffer);
             sound.setVolume(backgroundMusicParams.volume);
             sound.setLoop(backgroundMusicParams.lopped);
+            sound.play();
         });
     }
 

@@ -165,27 +165,39 @@ input[type=range]::-moz-range-thumb {
     -moz-transition: border 1000ms ease;
     transition: border 1000ms ease;
 }
-.range.black::-webkit-slider-thumb,
+.range.black::-webkit-slider-thumb {
+    border-color: #252525;
+}
 .range.black::-moz-range-thumb {
     border-color: #252525;
 }
-.range.dark-brown::-webkit-slider-thumb,
+.range.dark-brown::-webkit-slider-thumb {
+    border-color: #4f1b02;
+}
 .range.dark-brown::-moz-range-thumb {
     border-color: #4f1b02;
 }
-.range.brown::-webkit-slider-thumb,
+.range.brown::-webkit-slider-thumb {
+    border-color: #662404;
+}
 .range.brown::-moz-range-thumb {
     border-color: #662404;
 }
-.range.light-brown::-webkit-slider-thumb,
+.range.light-brown::-webkit-slider-thumb {
+    border-color: #f15c13;
+}
 .range.light-brown::-moz-range-thumb {
     border-color: #f15c13;
 }
-.range.yellow::-webkit-slider-thumb,
+.range.yellow::-webkit-slider-thumb {
+    border-color: #eff34e;
+}
 .range.yellow::-moz-range-thumb {
     border-color: #eff34e;
 }
-.range.light-yellow::-webkit-slider-thumb,
+.range.light-yellow::-webkit-slider-thumb {
+    border-color: #e1df80;
+}
 .range.light-yellow::-moz-range-thumb {
     border-color: #e1df80;
 }

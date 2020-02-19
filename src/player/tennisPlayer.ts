@@ -1,4 +1,4 @@
-import { AnimationMixer, MathUtils, Object3D, Raycaster, TextureLoader, Vector2 } from "three";
+import { AnimationMixer, MathUtils, MeshBasicMaterial, MeshStandardMaterial, Object3D, Raycaster, SkinnedMesh, TextureLoader, Vector2 } from "three";
 import { GLTF } from "three/examples/jsm/loaders/GLTFLoader";
 
 import { ExtendedScene } from "../extendedScene";
@@ -94,14 +94,14 @@ export class TennisPlayer implements IPartsManager<Object3D> {
 
     public constructor(gltf: GLTF, gender: string, loader: TextureLoader) {
         this._core = gltf;
-
+        
         this.setVisibleForAllParts(false);
         this._body = new PlayerBody(this.getPartByName(gender));
         this._body.getCore().visible = true;
         this._racket = this.getPartByName("Racket");
         this._tennisBall = this.getPartByName("Tennis_ball");
-        this._tennisBall.visible = true;
         this._racket.visible = true;
+        this.resetMaterial();
 
         const config = TennisPlayer.getConfigByGender(gender);
         this._body.setLoader(loader);
@@ -141,7 +141,32 @@ export class TennisPlayer implements IPartsManager<Object3D> {
         return this._core.scene.getObjectByName(name);
     }
 
+    public resetPartMaterial(part: SkinnedMesh): void {
+        const oldMaterial =  part.material as MeshStandardMaterial;
+        const material = new MeshBasicMaterial({
+            color: oldMaterial.color,
+            opacity: oldMaterial.opacity,
+            map: oldMaterial.map,
+            aoMap: oldMaterial.aoMap,
+            aoMapIntensity: oldMaterial.aoMapIntensity,
+            alphaMap: oldMaterial.alphaMap,
+            envMap: oldMaterial.envMap,
+            refractionRatio: oldMaterial.refractionRatio,
+            wireframe: oldMaterial.wireframe,
+            wireframeLinewidth: oldMaterial.wireframeLinewidth,
+            skinning: oldMaterial.skinning,
+            morphTargets: oldMaterial.morphTargets
+        });
+
+        part.material = material;
+    }
+    public resetMaterial(): void {
+        this.resetPartMaterial(this._racket as SkinnedMesh);
+        this.resetPartMaterial(this._tennisBall as SkinnedMesh);
+    }
+
     public playAnimation(animName: string): void {
+        this._tennisBall.visible = animName === GlobalConfig.animationsPool[1];
         const scene = this.getParent();
 
         if (!this._mixer) {

@@ -1,4 +1,4 @@
-import { Color, MeshStandardMaterial, Object3D, SkinnedMesh, TextureLoader } from "three";
+import { Color, MeshBasicMaterial, MeshStandardMaterial, Object3D, SkinnedMesh, TextureLoader } from "three";
 
 import { IPartsManager } from "../iPartsManager";
 
@@ -79,6 +79,8 @@ export class PlayerBody implements IPartsManager<SkinnedMesh> {
         if (hideAll) {
             this.setVisibleForAllParts(!hideAll);
         }
+
+        this.resetMaterial();
     }
 
     public getCore(): Object3D {
@@ -91,6 +93,28 @@ export class PlayerBody implements IPartsManager<SkinnedMesh> {
 
     public getPartByName(name: string): SkinnedMesh {
         return this._core.getObjectByName(name) as SkinnedMesh;
+    }
+
+    public resetMaterial(): void {
+        for (const child of this._core.children) {
+            const oldMaterial =  (child as SkinnedMesh).material as MeshStandardMaterial;
+            const material = new MeshBasicMaterial({
+                color: oldMaterial.color,
+                opacity: oldMaterial.opacity,
+                map: oldMaterial.map,
+                aoMap: oldMaterial.aoMap,
+                aoMapIntensity: oldMaterial.aoMapIntensity,
+                alphaMap: oldMaterial.alphaMap,
+                envMap: oldMaterial.envMap,
+                refractionRatio: oldMaterial.refractionRatio,
+                wireframe: oldMaterial.wireframe,
+                wireframeLinewidth: oldMaterial.wireframeLinewidth,
+                skinning: oldMaterial.skinning,
+                morphTargets: oldMaterial.morphTargets
+            });
+
+            (child as SkinnedMesh).material = material;
+        }
     }
 
     public setVisibleForAllParts(value: boolean): void {
@@ -107,20 +131,20 @@ export class PlayerBody implements IPartsManager<SkinnedMesh> {
 
     public changeTextureColor(elementName: string, color: Color | number | string): void {
         const element = this.getPartByName(`${elementName}`);
-        let material: MeshStandardMaterial = null;
+        let material: MeshBasicMaterial = null;
 
-        if (element.material as MeshStandardMaterial) {
-            material = element.material as MeshStandardMaterial;
-            material.emissive.set(new Color(color));
+        if (element.material as MeshBasicMaterial) {
+            material = element.material as MeshBasicMaterial;
+            material.color.set(new Color(color));
         }
     }
 
     public changeTexture(elementName: string, fullpath: string): void {
         const element = this.getPartByName(`${elementName}`);
-        let material: MeshStandardMaterial = null;
+        let material: MeshBasicMaterial = null;
 
-        if (element.material as MeshStandardMaterial) {
-            material = element.material as MeshStandardMaterial;
+        if (element.material as MeshBasicMaterial) {
+            material = element.material as MeshBasicMaterial;
         }
 
         if (!material || !this._textureLoader) {

@@ -37,7 +37,7 @@ class Main {
             gltf.scene.name = TennisPlayer.playerName;
             const tennisPlayer = new TennisPlayer(gltf, TennisPlayerGender.n_girl, scene.getTextureLoader());
             gltf.scene.userData = tennisPlayer;
-            tennisPlayer.playAnimation("main_menu_idle_type_1");
+            tennisPlayer.playAnimation("main_menu_idle_type_2");
         });
 
         scene.addTexture(require("../assets/2D/char_platform.png"), (material) => {

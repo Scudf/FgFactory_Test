@@ -110,6 +110,10 @@ export class ExtendedScene extends Scene {
     public initBackgroundMusic(backgroundMusicParams: IBackgroundMusicParams): void {
         const sound = new Audio(this._audioListener);
         const audioLoader = new AudioLoader();
+        
+        document.addEventListener("click", () => {
+            sound.context.resume();
+        });
 
         audioLoader.load(require("../assets/sounds/Main_menu_musics_1.ogg"), (buffer) => {
             sound.setBuffer(buffer);
